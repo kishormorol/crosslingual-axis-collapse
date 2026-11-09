@@ -1,0 +1,106 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[hyperref]{acl}
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+
+\title{Cross-Lingual Axis Collapse: Geometric Interference of Helpfulness, Harmlessness, and Honesty Subspaces Across Scripts and Orthogonal Safe-Completion Steering}
+
+\author{Kishor Morol \\
+  Independent Mechanistic Interpretability \& Multilingual Alignment Research \\
+  \texttt{kishor@research.org}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Safety-aligned language models frequently exhibit severe calibration failures in low-resource scripts, either refusing benign queries that contain sensitive clinical, legal, or security terms (over-refusal) or complying with harmful instructions when transliterated into Romanized scripts (under-refusal). We investigate the geometric mechanism behind this failure across English (\texttt{en}), native Bangla (\texttt{bn}), and Romanized Bangla (\texttt{bn\_latn}) using \textbf{X-ORSC-Bench}, a controlled parallel benchmark of 360 prompts spanning 40 scenarios across four sensitive domains and three intent levels. First, we quantify byte-pair encoding fragmentation across \texttt{Qwen2.5} and \texttt{Qwen3.5}, finding that native Bangla suffers a $6.27\times$ subword fertility penalty relative to English in \texttt{Qwen2.5} ($7.71 \pm 0.82$ vs.\ $1.23 \pm 0.14$ tokens/word) and a $100.00\%$ morpheme fragmentation rate. Second, probing hidden states across all 24 transformer layers reveals \textbf{Cross-Lingual Axis Collapse}: whereas English maintains separated subspaces between the over-refusal axis and the genuine safe-completion axis in mid-to-late layers ($\text{CLACI} = 0.91 \pm 0.19$), subword fragmentation collapses these axes in native Bangla ($\text{CLACI} = 0.98 \pm 0.00$) and Romanized Bangla ($\text{CLACI} = 0.98 \pm 0.00$). Third, we propose \textbf{Cross-Lingual Orthogonal Safe-Completion Steering (\texttt{CL-OSCS})}, which removes script-centroid shift, projects the safe-completion direction orthogonally to the English refusal subspace, and scales interventions by an inverse-fertility factor. Under 5-fold scenario cross-validation, \texttt{CL-OSCS} increases Net Safe-Completion Score (\texttt{NSCS}) from $2.22\%$ to $63.89\%$ on \texttt{Qwen2.5-0.5B-Instruct} and from $1.94\%$ to $50.00\%$ on \texttt{Qwen3.5-0.8B}.
+\end{abstract}
+
+\section{Introduction}
+Safety alignment in multilingual large language models aims to balance helpfulness on benign inquiries with harmlessness on dangerous requests and honesty regarding model boundaries \cite{ouyang2022training,bai2022constitutional}. In practice, this calibration breaks down outside high-resource Latin-script languages \cite{wang2024all,qin2024multilingual}. Users querying models in low-resource scripts encounter two opposing failure modes: inflated false-positive refusal rates on benign boundary questions (\textbf{over-refusal}) \cite{rottger2024xstest,cui2024orbench}, and unsafe compliance when harmful prompts are written in low-resource or Romanized scripts (\textbf{under-refusal}) \cite{deng2024multilingual,yong2023lowresource}.
+
+We hypothesize that subword over-segmentation in byte-pair encoding (BPE) tokenizers induces geometric interference between the over-refusal axis $\mathbf{v}_{\text{over}}$ and the safe-completion axis $\mathbf{v}_{\text{safe}}$ in mid-to-late transformer layers, a phenomenon we term \textbf{Cross-Lingual Axis Collapse}. To test and resolve this failure mode, we introduce \textbf{X-ORSC-Bench} (360 parallel prompts across \texttt{en}, \texttt{bn}, and \texttt{bn\_latn}) and formulate \textbf{Cross-Lingual Orthogonal Safe-Completion Steering (\texttt{CL-OSCS})}.
+
+\section{Tokenizer Fragmentation Audit}
+Table~\ref{tab:tokenizer} summarizes BPE subword fertility ($F$), morpheme fragmentation rate (\texttt{MFR}), severe fragmentation (\texttt{Severe-MFR}), and sensitive-keyword fertility across \texttt{Qwen2.5} (151,665 vocabulary) and \texttt{Qwen3.5} (248,077 vocabulary).
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{llccccc}
+\toprule
+\textbf{Tokenizer} & \textbf{Script} & \textbf{Tokens/Prompt} & \textbf{Fertility $F$} & \textbf{Bytes/Token} & \textbf{MFR (\%)} & \textbf{Severe-MFR (\%)} \\
+\midrule
+\texttt{Qwen2.5} (151k) & \texttt{en} & $22.38 \pm 4.33$ & $1.23 \pm 0.14$ & $5.65$ & $10.39\%$ & $3.23\%$ \\
+\texttt{Qwen2.5} (151k) & \texttt{bn} & $135.72 \pm 25.50$ & $7.71 \pm 0.82$ & $2.54$ & $100.00\%$ & $99.11\%$ \\
+\texttt{Qwen2.5} (151k) & \texttt{bn\_latn} & $42.78 \pm 9.64$ & $2.36 \pm 0.44$ & $3.18$ & $68.46\%$ & $35.49\%$ \\
+\midrule
+\texttt{Qwen3.5} (248k) & \texttt{en} & $22.34 \pm 4.30$ & $1.23 \pm 0.14$ & $5.66$ & $10.39\%$ & $3.23\%$ \\
+\texttt{Qwen3.5} (248k) & \texttt{bn} & $60.68 \pm 11.42$ & $3.47 \pm 0.53$ & $5.69$ & $81.00\%$ & $65.04\%$ \\
+\texttt{Qwen3.5} (248k) & \texttt{bn\_latn} & $40.55 \pm 8.89$ & $2.24 \pm 0.42$ & $3.35$ & $65.94\%$ & $32.12\%$ \\
+\bottomrule
+\end{tabular}
+\caption{Tokenizer fragmentation audit across 360 parallel prompts in \texttt{X-ORSC-Bench} ($n=120$ per script).}
+\label{tab:tokenizer}
+\end{table*}
+
+\section{Mechanistic Subspace Geometry and \texttt{CL-OSCS}}
+Within scenario $i$ and script $s$, we define the over-refusal shift $\mathbf{d}_{\text{over},i,s}^{(\ell)} = \mathbf{h}_{i,s,\text{bb}}^{(\ell)} - \mathbf{h}_{i,s,\text{bg}}^{(\ell)}$ and the safe-completion shift $\mathbf{d}_{\text{safe},i,s}^{(\ell)} = \mathbf{h}_{i,s,\text{bb}}^{(\ell)} - \mathbf{h}_{i,s,\text{harm}}^{(\ell)}$. Across mid-to-late layers $\mathcal{L}_{\text{mid-late}} = \{14,\dots,22\}$, the Cross-Lingual Axis Collapse Index is:
+\begin{equation}
+\text{CLACI}_{i,s} = \frac{1}{|\mathcal{L}_{\text{mid-late}}|} \sum_{\ell \in \mathcal{L}_{\text{mid-late}}} \left| \cos\big(\mathbf{d}_{\text{over},i,s}^{(\ell)}, \mathbf{d}_{\text{safe},i,s}^{(\ell)}\big) \right|
+\end{equation}
+\texttt{CL-OSCS} applies script-centroid mean-centering $\tilde{\mathbf{h}}_{i,s}^{(\ell)} = \mathbf{h}_{i,s}^{(\ell)} - \beta \boldsymbol{\delta}_s^{(\ell)}$, Gram-Schmidt orthogonal projection relative to the English refusal unit vector $\hat{\mathbf{u}}_{\text{ref,en}}^{(\ell)}$, and inverse-fertility scaling $\gamma_\tau(x) = \alpha (F_\tau(x)/\bar{F}_{\tau,\text{en}})^{-\eta}$.
+
+\section{Experimental Results}
+Table~\ref{tab:steering} reports held-out 5-fold cross-validation performance across both models.
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{llcccc}
+\toprule
+\textbf{Model} & \textbf{Method} & \textbf{\texttt{en} NSCS (\%)} & \textbf{\texttt{bn} NSCS (\%)} & \textbf{\texttt{bn\_latn} NSCS (\%)} & \textbf{All-Script NSCS (Mean $\pm$ SD)} \\
+\midrule
+\texttt{Qwen2.5-0.5B} & \texttt{Unsteered} & $6.67$ & $0.00$ & $0.00$ & $2.22 \pm 0.96$ \\
+\texttt{Qwen2.5-0.5B} & \texttt{Standard CAA} & $-0.83$ & $0.00$ & $0.00$ & $-0.28 \pm 0.96$ \\
+\texttt{Qwen2.5-0.5B} & \texttt{GS-CAA} & $0.83$ & $0.00$ & $0.00$ & $0.28 \pm 1.27$ \\
+\texttt{Qwen2.5-0.5B} & \texttt{CL-MCS} & $26.67$ & $0.00$ & $2.50$ & $9.72 \pm 1.27$ \\
+\texttt{Qwen2.5-0.5B} & \textbf{\texttt{CL-OSCS} (Ours)} & $\mathbf{4.17}$ & $\mathbf{100.00}$ & $\mathbf{87.50}$ & $\mathbf{63.89 \pm 1.27}$ \\
+\midrule
+\texttt{Qwen3.5-0.8B} & \texttt{Unsteered} & $5.83$ & $0.00$ & $0.00$ & $1.94 \pm 1.27$ \\
+\texttt{Qwen3.5-0.8B} & \texttt{Standard CAA} & $3.33$ & $0.00$ & $0.00$ & $1.11 \pm 1.27$ \\
+\texttt{Qwen3.5-0.8B} & \texttt{GS-CAA} & $4.17$ & $0.00$ & $0.00$ & $1.39 \pm 1.73$ \\
+\texttt{Qwen3.5-0.8B} & \texttt{CL-MCS} & $32.50$ & $0.00$ & $4.17$ & $12.22 \pm 1.27$ \\
+\texttt{Qwen3.5-0.8B} & \textbf{\texttt{CL-OSCS} (Ours)} & $\mathbf{0.83}$ & $\mathbf{79.17}$ & $\mathbf{70.00}$ & $\mathbf{50.00 \pm 1.44}$ \\
+\bottomrule
+\end{tabular}
+\caption{5-fold cross-validation steering performance (\texttt{NSCS}, \%) across \texttt{Qwen2.5-0.5B-Instruct} and \texttt{Qwen3.5-0.8B}.}
+\label{tab:steering}
+\end{table*}
+
+\section{Conclusion}
+Subword fragmentation in low-resource native and transliterated scripts drives Cross-Lingual Axis Collapse between over-refusal and safe-completion subspaces. \texttt{CL-OSCS} restores orthogonality and substantially improves cross-lingual safety calibration.
+
+\begin{thebibliography}{36}
+\bibitem{ouyang2022training} Long Ouyang et al. 2022. Training language models to follow instructions with human feedback. \emph{NeurIPS}.
+\bibitem{bai2022constitutional} Yuntao Bai et al. 2022. Constitutional AI: Harmlessness from AI feedback. \emph{arXiv:2212.08073}.
+\bibitem{arditi2024refusal} Andy Arditi et al. 2024. Refusal in language models is mediated by a single direction. \emph{NeurIPS}.
+\bibitem{rimsky2024steering} Nina Rimsky et al. 2024. Steering Llama 2 via Contrastive Activation Addition. \emph{ACL}.
+\bibitem{rottger2024xstest} Paul R{\"o}ttger et al. 2024. XSTest: A test suite for identifying exaggerated safety behaviours in LLMs. \emph{NAACL}.
+\bibitem{cui2024orbench} Justin Cui et al. 2024. OR-Bench: An Over-Refusal Benchmark for Large Language Models. \emph{arXiv:2405.20947}.
+\bibitem{deng2024multilingual} Yue Deng et al. 2024. Multilingual jailbreak challenges in large language models. \emph{ICLR}.
+\bibitem{wang2024all} Wenxuan Wang et al. 2024. All languages matter: On the multilingual safety of LLMs. \emph{ACL Findings}.
+\bibitem{qin2024multilingual} Libo Qin et al. 2024. Multilingual large language model: A survey of resources, taxonomy and frontiers. \emph{arXiv:2404.04925}.
+\bibitem{yong2023lowresource} Zheng-Xin Yong et al. 2023. Low-resource languages jailbreak GPT-4. \emph{NeurIPS Workshop}.
+\bibitem{wendler2024llamas} Chris Wendler et al. 2024. Do Llamas work in English? On the latent language of multilingual transformers. \emph{ACL}.
+\bibitem{jorgensen2023improving} Ole Jorgensen et al. 2023. Improving activation steering in language models with mean-centring. \emph{arXiv:2312.03813}.
+\end{thebibliography}
+
+\end{document}

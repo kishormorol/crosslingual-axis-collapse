@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 320" font-family="Helvetica, Arial, sans-serif">
+  <rect width="760" height="320" fill="#ffffff"/>
+  <text x="380" y="24" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e293b">
+    Figure 2: 5-Fold Cross-Validated Steering Performance Across All Scripts (Qwen2.5-0.5B-Instruct)
+  </text>
+  <line x1="50" y1="240" x2="720" y2="240" stroke="#475569" stroke-width="1.5"/>
+  <line x1="50" y1="40" x2="50" y2="240" stroke="#475569" stroke-width="1.5"/>
+  
+    <g transform="translate(65, 0)">
+      <rect x="0" y="52.8" width="24" height="187.2" fill="#ef4444" rx="2"/>
+      <text x="12" y="47.8" text-anchor="middle" font-size="9" fill="#991b1b">93.6%</text>
+      <rect x="27" y="231.7" width="24" height="8.3" fill="#f59e0b" rx="2"/>
+      <text x="39" y="226.7" text-anchor="middle" font-size="9" fill="#92400e">4.2%</text>
+      <rect x="54" y="235.6" width="24" height="4.4" fill="#10b981" rx="2"/>
+      <text x="66" y="230.6" text-anchor="middle" font-size="9" font-weight="bold" fill="#065f46">2.2%</text>
+      <text x="39" y="258" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#1e293b">Unsteered</text>
+    </g>
+    <g transform="translate(195, 0)">
+      <rect x="0" y="53.3" width="24" height="186.7" fill="#ef4444" rx="2"/>
+      <text x="12" y="48.3" text-anchor="middle" font-size="9" fill="#991b1b">93.3%</text>
+      <rect x="27" y="226.1" width="24" height="13.9" fill="#f59e0b" rx="2"/>
+      <text x="39" y="221.1" text-anchor="middle" font-size="9" fill="#92400e">6.9%</text>
+      <rect x="54" y="240.0" width="24" height="0.0" fill="#10b981" rx="2"/>
+      <text x="66" y="235.0" text-anchor="middle" font-size="9" font-weight="bold" fill="#065f46">-0.3%</text>
+      <text x="39" y="258" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#1e293b">Std CAA</text>
+    </g>
+    <g transform="translate(325, 0)">
+      <rect x="0" y="52.8" width="24" height="187.2" fill="#ef4444" rx="2"/>
+      <text x="12" y="47.8" text-anchor="middle" font-size="9" fill="#991b1b">93.6%</text>
+      <rect x="27" y="227.8" width="24" height="12.2" fill="#f59e0b" rx="2"/>
+      <text x="39" y="222.8" text-anchor="middle" font-size="9" fill="#92400e">6.1%</text>
+      <rect x="54" y="239.4" width="24" height="0.6" fill="#10b981" rx="2"/>
+      <text x="66" y="234.4" text-anchor="middle" font-size="9" font-weight="bold" fill="#065f46">0.3%</text>
+      <text x="39" y="258" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#1e293b">GS-CAA</text>
+    </g>
+    <g transform="translate(455, 0)">
+      <rect x="0" y="75.0" width="24" height="165.0" fill="#ef4444" rx="2"/>
+      <text x="12" y="70.0" text-anchor="middle" font-size="9" fill="#991b1b">82.5%</text>
+      <rect x="27" y="224.4" width="24" height="15.6" fill="#f59e0b" rx="2"/>
+      <text x="39" y="219.4" text-anchor="middle" font-size="9" fill="#92400e">7.8%</text>
+      <rect x="54" y="220.6" width="24" height="19.4" fill="#10b981" rx="2"/>
+      <text x="66" y="215.6" text-anchor="middle" font-size="9" font-weight="bold" fill="#065f46">9.7%</text>
+      <text x="39" y="258" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#1e293b">CL-MCS</text>
+    </g>
+    <g transform="translate(585, 0)">
+      <rect x="0" y="240.0" width="24" height="0.0" fill="#ef4444" rx="2"/>
+      <text x="12" y="235.0" text-anchor="middle" font-size="9" fill="#991b1b">0.0%</text>
+      <rect x="27" y="167.8" width="24" height="72.2" fill="#f59e0b" rx="2"/>
+      <text x="39" y="162.8" text-anchor="middle" font-size="9" fill="#92400e">36.1%</text>
+      <rect x="54" y="112.2" width="24" height="127.8" fill="#10b981" rx="2"/>
+      <text x="66" y="107.2" text-anchor="middle" font-size="9" font-weight="bold" fill="#065f46">63.9%</text>
+      <text x="39" y="258" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#1e293b">CL-OSCS (Ours)</text>
+    </g>
+</svg>

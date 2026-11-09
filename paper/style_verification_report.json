@@ -1,0 +1,92 @@
+{
+  "01_abstract": {
+    "words": 306,
+    "severity": 0,
+    "flagged": [],
+    "structure": [],
+    "rates": {
+      "em_dash": 0.0,
+      "triad": 0.0
+    }
+  },
+  "02_introduction": {
+    "words": 687,
+    "severity": 0,
+    "flagged": [],
+    "structure": [],
+    "rates": {
+      "em_dash": 0.0,
+      "triad": 0.0
+    }
+  },
+  "03_related_work": {
+    "words": 503,
+    "severity": 0,
+    "flagged": [],
+    "structure": [],
+    "rates": {
+      "em_dash": 0.0,
+      "triad": 0.0
+    }
+  },
+  "04_benchmark_and_tokenizer": {
+    "words": 726,
+    "severity": 0,
+    "flagged": [],
+    "structure": [],
+    "rates": {
+      "em_dash": 0.0,
+      "triad": 0.0
+    }
+  },
+  "05_mechanistic_methodology": {
+    "words": 691,
+    "severity": 0,
+    "flagged": [],
+    "structure": [],
+    "rates": {
+      "em_dash": 0.0,
+      "triad": 0.0
+    }
+  },
+  "06_experimental_results": {
+    "words": 934,
+    "severity": 0,
+    "flagged": [],
+    "structure": [],
+    "rates": {
+      "em_dash": 0.0,
+      "triad": 0.0
+    }
+  },
+  "07_ablations_and_analysis": {
+    "words": 331,
+    "severity": 0,
+    "flagged": [],
+    "structure": [],
+    "rates": {
+      "em_dash": 0.0,
+      "triad": 0.0
+    }
+  },
+  "08_limitations_and_ethics": {
+    "words": 1735,
+    "severity": 0,
+    "flagged": [],
+    "structure": [],
+    "rates": {
+      "em_dash": 0.0,
+      "triad": 7.49
+    }
+  },
+  "full_paper": {
+    "words": 5954,
+    "severity": 0,
+    "flagged": [],
+    "structure": [],
+    "rates": {
+      "em_dash": 0.0,
+      "triad": 1.68
+    }
+  }
+}
